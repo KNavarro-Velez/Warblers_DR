@@ -4,11 +4,13 @@
 #______________________________________________________________________________
 
 
-#Set wd
-setwd("~/Downloads")
+# Set wd
+setwd("/Users/kimnavel/github_files/Warblers_DR")
 
+# Load packages
 library(tidyverse) 
 library(MASS)
+library(readxl)
 library(vegan)
 library(janitor) # install.packages("janitor")
 library(pairwiseAdonis) #install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
@@ -26,14 +28,17 @@ library(pairwiseAdonis) #install_github("pmartinezarbizu/pairwiseAdonis/pairwise
 data <- read_csv("Target_species_and_variables.csv")
 
 #raw data
-Dom_Rep_data <- read.csv("Dom Republic.csv")
+Dom_Rep_data <- read_excel("Dom Republic 2023 Data Sheets.xlsx", 
+                sheet = "Edited Sheet with only targets")
 
-# Data cleaning ----
+# Data foraging behavior ----
 data <- data %>%
   rename("index" = ...1, "for_be" = "Foraging Behavior")
 
-
-
+data_behav <- Dom_Rep_data %>% 
+  clean_names() %>% colnames()
+  dplyr::select(adjusted_number, species, bird_height, foraging_location, foraging_behavior,substrate_type, canopy_height,x_canopy)
+  
 # 1. Chi square----
 
 # This is statistical test is very simple but it compares the frequency of the behaviors between species  from a random sample and determines if what we found is the same we would found with random data or it is significantly different s.
@@ -86,6 +91,8 @@ data_behavior <- tmp_data2 %>%
   mutate(Species= as.factor(Species)) ####THIS IS MY LAST CHANGE I WAS TRYING TO USE ALL THE DATA FOR IT. I WANT TO TRANSPONSE SPECIES FOR BEHAVIORS AND RUN IT AGAIN
 
 unique(data_behavior$Species)
+behaviors= colnames(data_behavior)[-1]
+
 
 nmds_be <- metaMDS(data_behavior[,-1], trace = FALSE, distance = "bray", maxit=99, trymax = 300, wascores = TRUE)# for final results increase maxit to 9999
 plot(nmds_be, type = "t")
@@ -103,29 +110,31 @@ goodness(nmds_be) # this show us how well the ordination plots represent real da
 
 stressplot(nmds_be) # This shows how closely our ordination fits real world plot dissimilarities and how well we can interpret the ordination
 
-colvec <- c("aliceblue","chocolate1", "darksalmon", "gray4", "lavenderblush2", "plum2", "royalblue3", "turquoise3")   # Identifies colors for group assignments
-pchvec <- c(20, 20,20,20,20,20,20,20)   # Identifies character symbols for group assignments
+colvec <- c("aliceblue","chocolate1", "darksalmon", "gray4", "lavenderblush2", "plum2", "royalblue3", "turquoise3", "blue","orange")   # Identifies colors for group assignments
+pchvec <- c(20, 17,13,10,7,8,9,12, 5)   # Identifies character symbols for group assignments
 
 nmds_be_groups <- unique(data_behavior[,1])
 
-plot(nmds_be)
+plot(nmds_be, type = "n")
+points(nmds_be, 
+       display="sites", 
+       col=colvec, 
+       pch=20)
 with(nmds_be_groups,
      points(nmds_be,
             display = "species", #speceis are the behaviors
-            col = "red",
-            pch = pchvec,
-            bg = colvec))
+            col = "black",
+            pch = pchvec))
 
 #Create convex hulls that highlight point clusters based on grouping dataframe
-ordihull(
-  nmds_be,nmds_be_groups$Species,
+ordiellipse(
+  nmds_be, 
+  data_behavior$Species,
   display = "sites", #species is behaviors
-  draw = c("polygon"),
+  draw="polygon",
   col = NULL,
-  border = c("aliceblue","chocolate1", "darksalmon", "gray4", "lavenderblush2", "plum2", "royalblue3", "turquoise3"),
-  lty = c(1, 2, 1, 2,1,2,1,2),
-  lwd = 2.5
-)
+  border = "black",
+  lwd = 1)
 
 # Calculating centroids 
 
@@ -135,7 +144,7 @@ ordihull(
 scrs <-
   scores(nmds_be, display = "sites", "species")
 cent <-
-  aggregate(scrs ~ Species, data = nmds_be_groups, FUN = "mean")
+  aggregate(scrs ~ G, data = data_behavior, FUN = "mean")
 names(cent) [-1] <- colnames(scrs)
 points(cent [,-1],
        pch = c( 8 , 8 , 8, 8),
@@ -145,7 +154,7 @@ points(cent [,-1],
        cex = 2.0 # Plots centroids as points on ordination
 )
 
-
+#check this: https://stackoverflow.com/questions/42799838/follow-up-plotting-ordiellipse-function-from-vegan-package-onto-nmds-plot-creat
 
 
 
@@ -202,7 +211,7 @@ stressplot(nmds1) # This shows how closely our ordination fits real world plot d
 # next step: make it pretty.
 
 plot(nmds1, "sites")   # this plots the species
-orditorp(nmds1, "sites") # this pulls the names for species
+orditorp(nmds1, "species") # this pulls the names for species
 
 
 colvec <- c("aliceblue","chocolate1", "darksalmon", "gray4", "lavenderblush2", "plum2", "royalblue3", "turquoise3", "yellow4", "darkorange4")   # Identifies colors for group assignments
@@ -247,6 +256,26 @@ points(cent [,-1],
        lwd = 3.0,
        cex = 2.0 # Plots centroids as points on ordination
 )
+
+
+
+
+
+
+
+
+
+
+
+# PCA -----
+#_____________________________________________________________________________
+
+DR_data <- Dom_Rep_data %>% 
+  clean_names() %>%
+  dplyr::select(adjusted_number, species, cloud, wind, time, bird_height, foraging_behavior, flock,con_hetero, substrate_type, canopy_height, canopy_level,tree_height) %>% 
+  rename("type_flock"=con_hetero) %>% View()
+
+
 
 
 
