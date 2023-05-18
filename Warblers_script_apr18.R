@@ -20,7 +20,7 @@ library(pairwiseAdonis) #install_github("pmartinezarbizu/pairwiseAdonis/pairwise
 
 #1. install.packages("devtools")
 #2. library(devtools)
-#3. install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
+#3. a
 #4. library(pairwiseAdonis)
 
 
@@ -36,7 +36,7 @@ data <- data %>%
   rename("index" = ...1, "for_be" = "Foraging Behavior")
 
 data_behav <- Dom_Rep_data %>% 
-  clean_names() %>% colnames()
+  clean_names() %>%
   dplyr::select(adjusted_number, species, bird_height, foraging_location, foraging_behavior,substrate_type, canopy_height,x_canopy)
   
 # 1. Chi square----
