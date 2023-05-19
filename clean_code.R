@@ -140,7 +140,7 @@ ggplot(nmds_coords, aes(x = MDS1, y = MDS2, color = Cluster)) +
   
 
 
-#PLOT WITH MEAN
+#PLOT WITH MEAN nmds1 and 2
 # Perform k-means clustering on the dissimilarity matrix
 k <- 4  # Set the number of clusters
 kmeans_result <- kmeans(diss_matrix_mean, centers = k)
@@ -157,6 +157,23 @@ ggplot(nmds_coords, aes(x = MDS1, y = MDS2, color = Cluster)) +
   geom_text(aes(label = Species), nudge_x = 0.1)
 
 
+
+
+#PLOT WITH MEAN nmds1 and 3
+# Perform k-means clustering on the dissimilarity matrix
+k <- 4  # Set the number of clusters
+kmeans_result <- kmeans(diss_matrix_mean, centers = k)
+
+# Add the cluster assignments to the NMDS coordinates data frame
+nmds_coords$Cluster <- factor(kmeans_result$cluster)
+
+# Create the NMDS plot with circles based on clusters
+ggplot(nmds_coords, aes(x = MDS1, y = MDS3, color = Cluster)) +
+  geom_point(size = 3) +
+  labs(x = "NMDS1", y = "NMDS3") +
+  theme_minimal() +
+  geom_encircle(aes(fill = Cluster), color = "black", expand = 0.1, alpha = 0.2) +
+  geom_text(aes(label = Species), nudge_x = 0.1)
 
 
 
