@@ -14,7 +14,6 @@ library(readxl)
 library(vegan)
 library(janitor) # install.packages("janitor")
 library(pairwiseAdonis) #install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
-
 # NOTE: 
 # TO INSTALL pairwiseAdonis you need to follow these steps:
 
@@ -47,7 +46,8 @@ data_behav <- Dom_Rep_data %>%
 table1 <- table(data$Species, data$for_be)
 
 chisq.test(table1)
-fisher.test(table1, simulate.p.value = TRUE) # since expected counts are low I did a Fisher test as well and it is still significant
+fisher.test(table1, simulate.p.value = TRUE) # since expected counts 
+# are low I did a Fisher test as well and it is still significant
 
 
 
@@ -254,7 +254,7 @@ points(cent [,-1],
        col = c("aliceblue","chocolate1", "darksalmon", "gray4", "lavenderblush2", "plum2", "royalblue3", "turquoise3", "yellow4", "darkorange4"),
        bg = c("black"),
        lwd = 3.0,
-       cex = 2.0 # Plots centroids as points on ordination
+       cex = 1.0 # Plots centroids as points on ordination
 )
 
 
