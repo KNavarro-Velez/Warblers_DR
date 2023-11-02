@@ -13,7 +13,7 @@ library(ggplot2)
 library(pairwiseAdonis)
 library(janitor)
 library(cluster)
-install.packages("cluster")
+library(ggalt)
 
 # set date ------
 todays_date <- as.character(Sys.Date())
@@ -34,6 +34,8 @@ data2 <- data %>%
   pivot_wider(names_from = foraging_behavior, values_from = ct) %>% 
   rename("Fl"=`F`)
 
+# all data ---
+#max values 
 data3_max <- data2 %>% 
   mutate(across(everything(), ~ replace_na(.x, 0))) %>% 
   mutate(rowsums= rowSums(data2[,c(3,4,5,6,7,8,9,10)], na.rm = TRUE)) %>% 
@@ -41,8 +43,9 @@ data3_max <- data2 %>%
   mutate(S= S/rowsums, C= C/rowsums, K= K/rowsums) %>% 
   mutate(D= D/rowsums, Fl= Fl/rowsums) %>% 
   group_by(id, species) %>% 
-  summarise(max_p= max(P), max_g= max(G), max_fl= max(Fl), max_h= max(H), max_s= max(S),max_c= max(C), max_k= max(K), mean_d= mean(D)) # instead of max we can also use the sum or the mean count.
+  summarise(max_p= max(P), max_g= max(G), max_fl= max(Fl), max_h= max(H), max_s= max(S),max_c= max(C), max_k= max(K), max_d= max(D)) # instead of max we can also use the sum or the mean count.
 
+#mean values
 data3_mean <- data2 %>% 
   mutate(across(everything(), ~ replace_na(.x, 0))) %>% 
   mutate(rowsums= rowSums(data2[,c(3,4,5,6,7,8,9,10)], na.rm = TRUE)) %>% 
@@ -53,14 +56,14 @@ data3_mean <- data2 %>%
   summarise(mean_p= mean(P), mean_g= mean(G), mean_fl= mean(Fl), mean_h= mean(H), mean_s= mean(S),mean_c= mean(C), mean_k= mean(K), mean_d= mean(D)) # instead of mean we can also use the sum or the mean count.
 
 
-# calculate dissimilarity matrix----
+# frequency per species ----
 data4_max <- data2 %>% 
   mutate(across(everything(), ~ replace_na(.x, 0))) %>% 
   mutate(rowsums= rowSums(data2[,c(3,4,5,6,7,8,9,10)], na.rm = TRUE)) %>% 
   mutate(P= P/rowsums, G= G/rowsums, H= H/rowsums) %>% 
   mutate(S= S/rowsums, C= C/rowsums, K= K/rowsums) %>% 
   mutate(D= D/rowsums, Fl= Fl/rowsums) %>% 
-  group_by(species) %>% 
+  group_by(species) %>%
   summarise(max_p= max(P), max_g= max(G), max_fl= max(Fl), max_h= max(H), max_s= max(S),max_c= max(C), max_k= max(K), mean_d= mean(D)) 
 
 
@@ -76,6 +79,7 @@ data4_mean <- data2 %>%
 
 
 
+# Dissimilarity matrix----
 diss_matrix_max <- vegdist(data4_max[,-1], method = "bray")
 print(diss_matrix_max)
 max(diss_matrix_max)
@@ -95,7 +99,7 @@ species_permanova <- c("AMRE", "BAWW", "BBTO", "BWVI", "CMWA", "NOPA",  "OVEN", 
 # Perform PERMANOVA----
 
 permanova_results <- adonis2(data3_max[, 3:10] ~ species,
-        data = data2, )
+        data = data3_max, )
 # Species are significantly different in their behaviors.
 
 # Print the PERMANOVA results
