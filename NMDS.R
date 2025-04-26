@@ -1,5 +1,5 @@
 #                         Warblers DR Foraging Behavior
-# K. Navarro-Velez, A. Eppedio, E. Heiser, M. Gilbert, M. Reinoso-Perez, A. Dhondt 
+# M. Gilbert,  A. Eppedio, E. Heiser, K. Navarro-Velez & A.A. Dhondt 
 #                                July 14th 2023
 #______________________________________________________________________________
 
@@ -76,7 +76,7 @@ data4_mean <- data2 %>%
 
 # _____________________________________________________________________________
 
-#                     ORANIZE FORAGING LOCATION DATA
+#                     ORGANIZE FORAGING LOCATION DATA
 
 
 #Make data set to count number of different types of foraging location for each individual
@@ -93,7 +93,7 @@ fata2 <- data %>%
   rename("DM"=`D`) %>%
   rename("GR"=`G`)
   
-#Edit previous fata set to be the percentage of foraging attempts of the behavior type for that individual
+#Edit previous Data set to be the percentage of foraging attempts of the behavior type for that individual
 fata3_max <- fata2 %>% 
   mutate(across(everything(), ~ replace_na(.x, 0))) %>% 
   mutate(rowsums= rowSums(fata2[,c(3,4,5,6,7,8,9,10,11,12,13,14)], na.rm = TRUE)) %>% 
@@ -470,8 +470,6 @@ ggplot(sorted_data, aes(x=Species, y=X..Height.in.Canopy, fill=Species, alpha = 
 #            Box Plot of HEIGHT WITHIN CANOPY
 
 #actually, no, see other script (1_DR_Stacked_Bar_Plots.R)
-
-
 
 
 AMRE = subset(data, data$Species == "AMRE")

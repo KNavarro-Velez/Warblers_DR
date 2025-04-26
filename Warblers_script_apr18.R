@@ -51,6 +51,7 @@ fisher.test(table1, simulate.p.value = TRUE) # since expected counts
 
 
 
+
 # 2. PERMANOVA test ----
 # This test is an analysis of variance. It makes a geometric partitioning of the variation across the species using a distance matrix (similarity or dissimilarity matrix) in response to the behaviors
 

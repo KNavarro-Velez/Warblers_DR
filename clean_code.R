@@ -1,6 +1,6 @@
 #                             Warblers DR Foraging Behavior
-#     K. Navarro-Velez, A. Eppedio, E. Heiser, M. Gilbert, M. Reinoso-Perez, A. Dhondt 
-#                                    May 10th 2023
+#     M. Gilbert,  A. Eppedio, E. Heiser, K. Navarro-Velez & A.A. Dhondt 
+#                                  May 10th 2023
 #______________________________________________________________________________
 
 # Set WD
